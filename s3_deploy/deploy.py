@@ -5,6 +5,7 @@ import argparse
 import logging
 import gzip
 import shutil
+import json
 import mimetypes
 from datetime import datetime
 
@@ -127,7 +128,7 @@ def get_s3_bucket(bucket_name, s3):
         if error_code == 404:
             exists = False
     if exists == False:
-        s3.create_bucket(Bucket=bucket_name)
+        s3.create_bucket(Bucket=bucket_name, ACL='public-read')
 
         # We need to set an S3 policy for our bucket to
         # allow anyone read access to our bucket and files.
@@ -135,7 +136,7 @@ def get_s3_bucket(bucket_name, s3):
         # able to view our S3 static web site.
         bucket_policy = s3.BucketPolicy(bucket_name)
         policy_payload = {
-            "Version": "2017-04-11",
+            "Version": "2012-10-17",
             "Statement": [{
                 "Sid": "Allow Public Access to All Objects",
                 "Effect": "Allow",
@@ -158,6 +159,7 @@ def get_s3_bucket(bucket_name, s3):
             WebsiteConfiguration=website_configuration
         )
         bucket = s3.Bucket(bucket_name)
+
     return bucket
 
 def main():

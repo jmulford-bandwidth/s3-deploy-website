@@ -9,6 +9,7 @@ import mimetypes
 from datetime import datetime
 
 import boto3
+from botocore.client import ClientError
 
 from six import BytesIO
 
@@ -119,14 +120,43 @@ def get_s3_bucket(bucket_name, s3):
     exists = True
     try:
         s3.meta.client.head_bucket(Bucket=bucket_name)
-    except botocore.exceptions.ClientError as e:
+    except ClientError as e:
         # If a client error is thrown, then check that it was a 404 error.
         # If it was a 404 error, then the bucket does not exist.
         error_code = int(e.response['Error']['Code'])
         if error_code == 404:
             exists = False
     if exists == False:
-        s3.create_bucket(Bucket=bucket_name, ACL='public-read')
+        s3.create_bucket(Bucket=bucket_name)
+
+        # We need to set an S3 policy for our bucket to
+        # allow anyone read access to our bucket and files.
+        # If we do not set this policy, people will not be
+        # able to view our S3 static web site.
+        bucket_policy = s3.BucketPolicy(bucket_name)
+        policy_payload = {
+            "Version": "2017-04-11",
+            "Statement": [{
+                "Sid": "Allow Public Access to All Objects",
+                "Effect": "Allow",
+                "Principal": "*",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::%s/*" % (bucket_name)
+                }
+            ]
+        }
+        # Add the policy to the bucket
+        bucket_policy.put(Policy=json.dumps(policy_payload))
+        # Make our new S3 bucket a static website
+        bucket_website = s3.BucketWebsite(bucket_name)
+        # Create the configuration for the website
+        website_configuration = {
+            'ErrorDocument': {'Key': 'error.html'},
+            'IndexDocument': {'Suffix': 'index.html'},
+        }
+        bucket_website.put(
+            WebsiteConfiguration=website_configuration
+        )
         bucket = s3.Bucket(bucket_name)
     return bucket
 

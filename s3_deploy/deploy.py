@@ -112,6 +112,7 @@ def upload_key(obj, path, cache_rules, dry, storage_class=None):
     finally:
         content_file.close()
 
+
 def get_s3_bucket(bucket_name, s3):
     """"
     Takes the s3 and bucket_name and returns s3 bucket
@@ -127,7 +128,7 @@ def get_s3_bucket(bucket_name, s3):
         error_code = int(e.response['Error']['Code'])
         if error_code == 404:
             exists = False
-    if exists == False:
+    if exists is False:
         s3.create_bucket(Bucket=bucket_name, ACL='public-read')
 
         # We need to set an S3 policy for our bucket to
@@ -143,8 +144,7 @@ def get_s3_bucket(bucket_name, s3):
                 "Principal": "*",
                 "Action": "s3:GetObject",
                 "Resource": "arn:aws:s3:::%s/*" % (bucket_name)
-                }
-            ]
+            }]
         }
         # Add the policy to the bucket
         bucket_policy.put(Policy=json.dumps(policy_payload))
@@ -161,6 +161,7 @@ def get_s3_bucket(bucket_name, s3):
         bucket = s3.Bucket(bucket_name)
 
     return bucket
+
 
 def main():
     logging.basicConfig(level=logging.INFO)

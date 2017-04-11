@@ -110,6 +110,25 @@ def upload_key(obj, path, cache_rules, dry, storage_class=None):
     finally:
         content_file.close()
 
+def get_s3_bucket(bucket_name, s3):
+    """"
+    Takes the s3 and bucket_name and returns s3 bucket
+    If does not exist, it will create bucket with permissions
+    """
+    bucket = s3.Bucket(bucket_name)
+    exists = True
+    try:
+        s3.meta.client.head_bucket(Bucket=bucket_name)
+    except botocore.exceptions.ClientError as e:
+        # If a client error is thrown, then check that it was a 404 error.
+        # If it was a 404 error, then the bucket does not exist.
+        error_code = int(e.response['Error']['Code'])
+        if error_code == 404:
+            exists = False
+    if exists == False:
+        s3.create_bucket(Bucket=bucket_name, ACL='public-read')
+        bucket = s3.Bucket(bucket_name)
+    return bucket
 
 def main():
     logging.basicConfig(level=logging.INFO)
@@ -141,7 +160,8 @@ def main():
     logger.info('Connecting to bucket {}...'.format(bucket_name))
 
     s3 = boto3.resource('s3')
-    bucket = s3.Bucket(bucket_name)
+
+    bucket = get_s3_bucket(bucket_name, s3)
 
     site_dir = os.path.join(base_path, conf['site'])
 

@@ -9,12 +9,14 @@ import json
 import mimetypes
 from datetime import datetime
 
+
 import boto3
 from botocore.client import ClientError
 
 from six import BytesIO
 
 from . import config
+from . import github
 from .prefixcovertree import PrefixCoverTree
 
 # Support UTC timezone in 2.7
@@ -176,12 +178,38 @@ def main():
         '-n', '--dry-run', action='store_true', dest='dry',
         help='run without uploading any files')
     parser.add_argument(
+        'stub', help='the stub for the s3 bucket',
+        default='', nargs='?')
+    parser.add_argument(
         'path', help='the .s3_website.yaml configuration file or directory',
         default='.', nargs='?')
+
     args = parser.parse_args()
+    path = args.path
+    site_stub = args.stub
+    print(args)
+    PR_NUMBER = os.environ.get('TRAVIS_PULL_REQUEST')
+    REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
+    TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')
+    branch_name = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH')
+    SITE_LOCATION = os.environ.get('SITE_LOCATION')
+
+    if PR_NUMBER == "false":
+        print('Not a pull request, not running')
+        sys.exit(0)
 
     # Open configuration file
-    conf, base_path = config.load_config_file(args.path)
+    base_path = os.path.dirname(path)
+    if site_stub == '':
+        site_stub = 'bw'
+    site_name = site_stub + '-' + branch_name
+    conf = {
+        's3_bucket': site_name
+        }
+    if not SITE_LOCATION:
+        conf['site'] = '_book'
+    else:
+        conf['site'] = SITE_LOCATION
 
     bucket_name = conf['s3_bucket']
     cache_rules = conf.get('cache_rules', [])
@@ -245,6 +273,10 @@ def main():
             updated_keys.add(key_name)
 
     logger.info('Bucket update done.')
+
+    comment = github.build_comment(site_name)
+    response = github.comment_on_pull_request(
+        PR_NUMBER, REPO_SLUG, TOKEN, comment)
 
     # Invalidate files in cloudfront distribution
     if 'cloudfront_distribution_id' in conf:

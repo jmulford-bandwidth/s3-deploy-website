@@ -228,6 +228,7 @@ def main():
     bucket = get_s3_bucket(bucket_name, s3)
 
     site_dir = os.path.join(base_path, conf['site'])
+    print("site dir: " + site_dir)
 
     logger.info('Site: {}'.format(site_dir))
 

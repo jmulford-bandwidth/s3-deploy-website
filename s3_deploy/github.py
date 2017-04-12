@@ -27,8 +27,7 @@ def comment_on_pull_request(pr_number, slug, token, comment):
     return response.json()
 
 
-def build_comment(branch_name):
-    site_name = 'bw-docs-' + branch_name
+def build_comment(site_name):
     comment = """Preview Changes at:
         http://%s.s3-website-us-east-1.amazonaws.com/""" % site_name
     return comment

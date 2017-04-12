@@ -193,8 +193,9 @@ def main():
         sys.exit(0)
 
     # Open configuration file
+    site_stub = REPO_SLUG.replace('/', '-').replace('.', '-')
     base_path = os.path.dirname(path)
-    site_name = 'bw-docs' + branch_name
+    site_name = site_stub + '-' + branch_name
     conf = {
         's3_bucket': site_name
         }
@@ -202,8 +203,6 @@ def main():
         conf['site'] = '_book'
     else:
         conf['site'] = SITE_LOCATION
-
-    site_name = 'bw-' + branch_name
 
     bucket_name = conf['s3_bucket']
     cache_rules = conf.get('cache_rules', [])
@@ -268,7 +267,7 @@ def main():
 
     logger.info('Bucket update done.')
 
-    comment = github.build_comment(branch_name)
+    comment = github.build_comment(site_name)
     response = github.comment_on_pull_request(
         PR_NUMBER, REPO_SLUG, TOKEN, comment)
 

@@ -211,7 +211,9 @@ def main():
         conf['site'] = '_book'
     else:
         conf['site'] = SITE_LOCATION
-
+    print("======== S3 deploy configuration =========")
+    print(conf)
+    print("==========================================")
     bucket_name = conf['s3_bucket']
     cache_rules = conf.get('cache_rules', [])
     if conf.get('s3_reduced_redundancy', False):

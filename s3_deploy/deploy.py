@@ -180,8 +180,12 @@ def main():
     parser.add_argument(
         'path', help='the .s3_website.yaml configuration file or directory',
         default='.', nargs='?')
+    parser.add_argument(
+        'stub', help='the stub for the s3 bucket',
+        default='', nargs='?')
     args = parser.parse_args()
     path = args.path
+    site_stub = args.stub
     PR_NUMBER = os.environ.get('TRAVIS_PULL_REQUEST')
     REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
     TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')
@@ -193,8 +197,9 @@ def main():
         sys.exit(0)
 
     # Open configuration file
-    site_stub = REPO_SLUG.replace('/', '-').replace('.', '-')
     base_path = os.path.dirname(path)
+    if site_stub == '':
+        site_stub = 'bw'
     site_name = site_stub + '-' + branch_name
     conf = {
         's3_bucket': site_name

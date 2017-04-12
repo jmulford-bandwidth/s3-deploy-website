@@ -201,6 +201,7 @@ def main():
 
     # Open configuration file
     base_path = os.path.dirname(path)
+    print('base_path: ' + base_path)
     if site_stub == '':
         site_stub = 'bw'
     site_name = site_stub + '-' + branch_name

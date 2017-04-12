@@ -194,7 +194,9 @@ def main():
 
     # Open configuration file
     base_path = os.path.dirname(path)
-    conf['s3_bucket'] = site_name = 'bw-' + branch_name
+    conf = {
+        s3_bucket: site_name = 'bw-' + branch_name
+        }
     if not SITE_LOCATION:
         conf['site'] = '_book'
     else:

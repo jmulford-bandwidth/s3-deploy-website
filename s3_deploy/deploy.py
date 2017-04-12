@@ -3,6 +3,7 @@ import os
 import re
 import argparse
 import logging
+import sys
 import gzip
 import shutil
 import json

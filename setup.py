@@ -35,5 +35,5 @@ setup(
     },
     test_suite='s3_deploy.tests',
     install_requires=[
-        'boto3', 'PyYAML', 'six'
+        'boto3', 'PyYAML', 'six', 'requests'
     ])

@@ -178,11 +178,12 @@ def main():
         '-n', '--dry-run', action='store_true', dest='dry',
         help='run without uploading any files')
     parser.add_argument(
-        'path', help='the .s3_website.yaml configuration file or directory',
-        default='.', nargs='?')
-    parser.add_argument(
         'stub', help='the stub for the s3 bucket',
         default='', nargs='?')
+    parser.add_argument(
+        'path', help='the .s3_website.yaml configuration file or directory',
+        default='.', nargs='?')
+
     args = parser.parse_args()
     path = args.path
     site_stub = args.stub

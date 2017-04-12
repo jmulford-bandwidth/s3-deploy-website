@@ -181,7 +181,7 @@ def main():
         'path', help='the .s3_website.yaml configuration file or directory',
         default='.', nargs='?')
     args = parser.parse_args()
-    path = args['path']
+    path = args.path
     PR_NUMBER = os.environ.get('TRAVIS_PULL_REQUEST')
     REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
     TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')

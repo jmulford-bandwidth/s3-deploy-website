@@ -186,6 +186,7 @@ def main():
     args = parser.parse_args()
     path = args.path
     site_stub = args.stub
+    print(args)
     PR_NUMBER = os.environ.get('TRAVIS_PULL_REQUEST')
     REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
     TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')

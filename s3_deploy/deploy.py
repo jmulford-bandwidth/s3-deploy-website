@@ -196,7 +196,7 @@ def main():
     base_path = os.path.dirname(path)
     site_name = 'bw-docs' + branch_name
     conf = {
-        s3_bucket: site_name
+        's3_bucket': site_name
         }
     if not SITE_LOCATION:
         conf['site'] = '_book'

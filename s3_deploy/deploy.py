@@ -166,6 +166,10 @@ def get_s3_bucket(bucket_name, s3):
     return bucket
 
 
+def rpl(s):
+    return s.replace('_', '-')
+
+
 def main():
     logging.basicConfig(level=logging.INFO)
     logging.getLogger('boto3').setLevel(logging.WARNING)
@@ -192,8 +196,8 @@ def main():
     PR_NUMBER = os.environ.get('TRAVIS_PULL_REQUEST')
     REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
     TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')
-    branch_name = os.environ.get('TRAVIS_PULL_REQUEST_BRANCH')
-    SITE_LOCATION = os.environ.get('SITE_LOCATION')
+    branch_name = rpl(os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
+    SITE_LOCATION = ros.environ.get('SITE_LOCATION')
 
     if PR_NUMBER == "false":
         print('Not a pull request, not running')
@@ -204,7 +208,7 @@ def main():
     print('base_path: ' + base_path)
     if site_stub == '':
         site_stub = 'bw'
-    site_name = site_stub + '-' + branch_name
+    site_name = rpl(site_stub + '-' + branch_name)
     conf = {
         's3_bucket': site_name
         }

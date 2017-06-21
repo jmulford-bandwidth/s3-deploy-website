@@ -197,7 +197,7 @@ def main():
     REPO_SLUG = os.environ.get('TRAVIS_REPO_SLUG')
     TOKEN = os.environ.get('TRAVIS_BOT_GITHUB_TOKEN')
     branch_name = rpl(os.environ.get('TRAVIS_PULL_REQUEST_BRANCH'))
-    SITE_LOCATION = ros.environ.get('SITE_LOCATION')
+    SITE_LOCATION = os.environ.get('SITE_LOCATION')
 
     if PR_NUMBER == "false":
         print('Not a pull request, not running')

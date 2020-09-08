@@ -29,5 +29,5 @@ def comment_on_pull_request(pr_number, slug, token, comment):
 
 def build_comment(site_name):
     comment = """Preview Changes at:
-        http://%s.s3-website-us-east-1.amazonaws.com/""" % site_name
+        https://%s.s3-website-us-east-1.amazonaws.com/index.html""" % site_name
     return comment

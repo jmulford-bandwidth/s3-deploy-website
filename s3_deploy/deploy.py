@@ -121,7 +121,7 @@ def get_s3_bucket(bucket_name, s3):
     Takes the s3 and bucket_name and returns s3 bucket
     If does not exist, it will create bucket with permissions
     """
-    bucket_name = bucket_name.lower()
+    bucket_name = bucket_name.lower().replace('/','-')
     bucket = s3.Bucket(bucket_name)
     exists = True
     try:
